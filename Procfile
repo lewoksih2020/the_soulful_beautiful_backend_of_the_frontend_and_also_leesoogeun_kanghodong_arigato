@@ -1,0 +1,1 @@
+web: gunicorn reReddit_backend.wsgi --log-file -
