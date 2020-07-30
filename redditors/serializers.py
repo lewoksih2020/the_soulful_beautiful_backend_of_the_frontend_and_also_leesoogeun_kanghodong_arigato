@@ -199,9 +199,10 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return user
 
 
-from comments.serializers import CommentSerializer
+# from comments.serializers import CommentSerializer
 from loanrequests.serializers import LoanrequestSerializer
 
+from savingrequests.serializers import SavingrequestSerializer
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """
@@ -232,8 +233,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
     cake_day = serializers.DateTimeField(
         source='date_joined'
     )
-    comments = serializers.SerializerMethodField()
+    # comments = serializers.SerializerMethodField()
     loanrequests = serializers.SerializerMethodField()
+    savingrequests = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -246,24 +248,33 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'last_name',
             'age',
             'moderated_subs',
-            'comments',
             'location',
             'loanrequests',
+            'savingrequests',
+
             'karma',
             'cake_day'
         )
 
-    def get_comments(self, obj):
-        serializer = CommentSerializer(
-            obj.comments.all().order_by("-created"),
+    # def get_comments(self, obj):
+    #     serializer = CommentSerializer(
+    #         obj.comments.all().order_by("-created"),
+    #         many=True,
+    #         context=self.context
+    #     )
+    #     return serializer.data
+
+    def get_loanrequests(self, obj):
+        serializer = LoanrequestSerializer(
+            obj.loanrequests.all().order_by("-created"),
             many=True,
             context=self.context
         )
         return serializer.data
 
-    def get_loanrequests(self, obj):
-        serializer = LoanrequestSerializer(
-            obj.loanrequests.all().order_by("-created"),
+    def get_savingrequests(self, obj):
+        serializer = SavingrequestSerializer(
+            obj.savingrequests.all().order_by("-created"),
             many=True,
             context=self.context
         )
@@ -299,8 +310,9 @@ class AccountPropertiesSerializer(serializers.ModelSerializer):
     cake_day = serializers.DateTimeField(
         source='date_joined'
     )
-    comments = serializers.SerializerMethodField()
+    # comments = serializers.SerializerMethodField()
     loanrequests = serializers.SerializerMethodField()
+    savingrequests = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -314,23 +326,31 @@ class AccountPropertiesSerializer(serializers.ModelSerializer):
             'email',
             'subs',
             'moderated_subs',
-            'comments',
             'loanrequests',
+            'savingrequests',
             'karma',
             'cake_day'
         )
 
-    def get_comments(self, obj):
-        serializer = CommentSerializer(
-            obj.comments.all().order_by("-created"),
+    # def get_comments(self, obj):
+    #     serializer = CommentSerializer(
+    #         obj.comments.all().order_by("-created"),
+    #         many=True,
+    #         context=self.context
+    #     )
+    #     return serializer.data
+
+    def get_loanrequests(self, obj):
+        serializer = LoanrequestSerializer(
+            obj.loanrequests.all().order_by("-created"),
             many=True,
             context=self.context
         )
         return serializer.data
 
-    def get_loanrequests(self, obj):
-        serializer = LoanrequestSerializer(
-            obj.loanrequests.all().order_by("-created"),
+    def get_savingrequests(self, obj):
+        serializer = SavingrequestSerializer(
+            obj.savingrequests.all().order_by("-created"),
             many=True,
             context=self.context
         )

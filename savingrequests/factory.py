@@ -3,12 +3,12 @@ import random
 import faker
 from django.utils import timezone
 
-from loanrequests.models import Loanrequest
+from savingrequests.models import Savingrequest
 
 
-class LoanrequestFactory(factory.django.DjangoModelFactory):
+class SavingrequestFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Loanrequest
+        model = Savingrequest
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):

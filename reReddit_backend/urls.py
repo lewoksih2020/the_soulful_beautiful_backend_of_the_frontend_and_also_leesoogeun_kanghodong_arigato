@@ -26,7 +26,7 @@ def api_root(request, format=None):
         'users': reverse('user-list', request=request, format=format),
         'subs': reverse('sub-list', request=request, format=format),
         'loanrequests': reverse('loanrequest-list', request=request, format=format),
-        'comments': reverse('comment-list', request=request, format=format),
+        'savingrequests': reverse('savingrequest-list', request=request, format=format),
     })
 
 
@@ -36,8 +36,8 @@ urlpatterns = [
     path('users/', include('redditors.urls')),
     path('subreddits/', include('subs.urls')),
     path('loanrequests/', include('loanrequests.urls')),
-    path('comments/', include('comments.urls')),
-    path('vote/', include('votes.urls')),
+    path('savingrequests/', include('savingrequests.urls')),
+    # path('vote/', include('votes.urls')),
     path('search/', include('search.urls')),
     path('api-auth/', include('rest_framework.urls')),
 ]

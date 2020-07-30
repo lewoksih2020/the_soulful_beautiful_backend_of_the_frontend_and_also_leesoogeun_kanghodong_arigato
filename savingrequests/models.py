@@ -13,7 +13,7 @@ from subs.models import Sub
 #         return super().get_queryset().prefetch_related('votes')
 
 
-class Loanrequest(models.Model):
+class Savingrequest(models.Model):
     # This is the default because it is not very common to
     # not need to calculate upvotes and that will result in
     # a lot of db hits if we don't prefetch the votes
@@ -36,13 +36,13 @@ class Loanrequest(models.Model):
     subreddit = models.ForeignKey(
         Sub,
         on_delete=models.CASCADE,
-        related_name="loanrequests"
+        related_name="savingrequests"
     )
     authorsender = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         null=True,
-        related_name="loanrequests"
+        related_name="savingrequests"
     )
 
     # voters = models.ManyToManyField(

@@ -1,4 +1,4 @@
 ordering = {
-    'popular': 'upvotes',
+    # 'popular': 'upvotes',
     'new': '-created',
 }

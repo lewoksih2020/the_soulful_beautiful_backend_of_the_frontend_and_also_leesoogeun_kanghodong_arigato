@@ -1,20 +1,16 @@
-from rest_framework import generics, status
+from django.utils.translation import ugettext_lazy as _
+from rest_framework import generics
+from rest_framework import status, exceptions
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListAPIView
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
-                                        IsAuthenticated)
-from rest_framework.views import APIView
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from django.utils.translation import ugettext_lazy as _
-from rest_framework import status, exceptions
 
 from loanrequests.pagination import LoanrequestListPagination
-from .permissions import IsModeratorOrAdminOrReadOnly
-from .models import Sub
-from .serializers import SubSerializer, SubredditSubscribeSerializer
 from redditors.models import UserSubMembership, User
-from loanrequests.models import Loanrequest
+from .models import Sub
+from .permissions import IsModeratorOrAdminOrReadOnly
+from .serializers import SubSerializer, SubredditSubscribeSerializer
 
 
 class UserSubListView(ListAPIView):

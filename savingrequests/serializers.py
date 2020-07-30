@@ -5,10 +5,10 @@ from rest_framework import serializers
 from redditors.models import User
 from subs.models import Sub
 # from votes.models import LoanrequestVote
-from .models import Loanrequest
+from .models import Savingrequest
 
 
-class LoanrequestSerializer(serializers.ModelSerializer):
+class SavingrequestSerializer(serializers.ModelSerializer):
     authorsender = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username',
@@ -35,7 +35,7 @@ class LoanrequestSerializer(serializers.ModelSerializer):
     # vote_state = serializers.SerializerMethodField()
 
     class Meta:
-        model = Loanrequest
+        model = Savingrequest
         fields = ('pk', 'created', 'updated', 'title', 'body',
                     'subreddit', 'authorsender', 'subreddit_title',
                   'authorsender_username')
@@ -53,12 +53,12 @@ class LoanrequestSerializer(serializers.ModelSerializer):
             # make sure they aren't trying to create a post to a pseudo subreddit
             if subreddit.title.lower() in Sub.pseudo_subreddits.keys():
                 message = _(
-                    ("You can't create a Loanrequest to the "
+                    ("You can't create a Savingrequest to the "
                      "'{}' subreddit.".format(subreddit.title))
                 )
                 raise serializers.ValidationError(message)
             if not subreddit in authorsender.subs.all():
-                message = _("You must be a member of the subreddit to Loanrequest here.")
+                message = _("You must be a member of the subreddit to Savingrequest here.")
                 raise serializers.ValidationError(message)
 
         return data

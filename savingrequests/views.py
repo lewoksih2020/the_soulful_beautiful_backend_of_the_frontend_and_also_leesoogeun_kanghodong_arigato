@@ -10,24 +10,24 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from loanrequests.pagination import LoanrequestListPagination
+from savingrequests.pagination import SavingrequestListPagination
 from redditors.models import User
 from subs.models import Sub
-from .models import Loanrequest
+from .models import Savingrequest
 from .permissions import IsauthorsenderOrModOrAdminOrReadOnly
-from .serializers import LoanrequestSerializer
+from .serializers import SavingrequestSerializer
 
 
-class LoanrequestListView(ListAPIView):
+class SavingrequestListView(ListAPIView):
     """
     Standard list view for loanrequests
     
     query parameter: username
     """
     # queryset = Post.objects.all()
-    queryset = Loanrequest.objects.get_queryset().order_by('pk')
-    serializer_class = LoanrequestSerializer
-    pagination_class = LoanrequestListPagination
+    queryset = Savingrequest.objects.get_queryset().order_by('pk')
+    serializer_class = SavingrequestSerializer
+    pagination_class = SavingrequestListPagination
     # pagination_class = PageNumberPagination
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ('title', 'body')
@@ -46,22 +46,22 @@ class LoanrequestListView(ListAPIView):
                 user = User.objects.get(username=username)
             except User.DoesNotExist:
                 return context
-            context['loanrequest_user_pk'] = user.pk
+            context['savingrequest_user_pk'] = user.pk
         return context
 
 
-class LoanrequestDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = Loanrequest.objects.all()
-    serializer_class = LoanrequestSerializer
+class SavingrequestDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = Savingrequest.objects.all()
+    serializer_class = SavingrequestSerializer
     permission_classes = (IsauthorsenderOrModOrAdminOrReadOnly,)
 
 
-class UserLoanrequestListView(ListAPIView):
+class UserSavingrequestListView(ListAPIView):
     """
     For a particular user return list of all subscribed subreddits.
     """
-    serializer_class = LoanrequestSerializer
-    pagination_class = LoanrequestListPagination
+    serializer_class = SavingrequestSerializer
+    pagination_class = SavingrequestListPagination
     # pagination_class = PageNumberPagination
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ('title', 'body')
@@ -85,12 +85,12 @@ class UserLoanrequestListView(ListAPIView):
             ))
             raise exceptions.NotFound(message)
         # qs = user.subs.all()
-        qs = user.loanrequests.get_queryset().order_by('pk')
+        qs = user.savingrequests.get_queryset().order_by('pk')
         return qs
 
 
-class LoanrequestToSubredditView(CreateAPIView):
-    serializer_class = LoanrequestSerializer
+class SavingrequestToSubredditView(CreateAPIView):
+    serializer_class = SavingrequestSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
@@ -127,8 +127,8 @@ class LoanrequestToSubredditView(CreateAPIView):
         )
 
 
-class LoanrequestToSubredditWithUsernameParamView(CreateAPIView):
-    serializer_class = LoanrequestSerializer
+class SavingrequestToSubredditWithUsernameParamView(CreateAPIView):
+    serializer_class = SavingrequestSerializer
 
     # permission_classes = (IsAuthenticatedOrReadOnly,)
 
@@ -185,7 +185,7 @@ class LoanrequestToSubredditWithUsernameParamView(CreateAPIView):
         )
 
 
-class SubLoanrequestListView(ListAPIView):
+class SubSavingrequestListView(ListAPIView):
     """
     For a particular sub return list of all loanrequests.
     Posts can be ordered with optional GET parameter 'orderby'.
@@ -193,8 +193,8 @@ class SubLoanrequestListView(ListAPIView):
     
     query parameter: orderby
     """
-    serializer_class = LoanrequestSerializer
-    pagination_class = LoanrequestListPagination
+    serializer_class = SavingrequestSerializer
+    pagination_class = SavingrequestListPagination
     # pagination_class = PageNumberPagination
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ('title', 'body')
@@ -237,7 +237,7 @@ class SubLoanrequestListView(ListAPIView):
                 ))
                 raise exceptions.NotFound(message)
             # qs = subreddit.loanrequests.all()
-            qs = subreddit.loanrequests.get_queryset().order_by('pk')
+            qs = subreddit.savingrequests.get_queryset().order_by('pk')
         return qs
 
     def get_home_queryset(self):
@@ -249,14 +249,14 @@ class SubLoanrequestListView(ListAPIView):
         of all loanrequests.
         """
         if self.request.user and self.request.user.is_authenticated:
-            return Loanrequest.objects.filter(
+            return Savingrequest.objects.filter(
                 # subreddit__in=self.request.user.subs.all()
                 subreddit__in=self.request.user.subs.get_queryset().order_by('pk')
             )
 
         # return all loanrequests if unauthed
         # return Post.objects.all()
-        return Loanrequest.objects.get_queryset().order_by('pk')
+        return Savingrequest.objects.get_queryset().order_by('pk')
 
     # def get_popular_queryset(self):
     #     """
@@ -278,4 +278,4 @@ class SubLoanrequestListView(ListAPIView):
         use popular for now.
         """
         # return Post.objects.all()
-        return Loanrequest.objects.get_queryset().order_by('pk')
+        return Savingrequest.objects.get_queryset().order_by('pk')
