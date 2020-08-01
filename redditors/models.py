@@ -14,7 +14,7 @@ from rest_framework.authtoken.models import Token
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, username, location, first_name, last_name, age, password=None):
+    def create_user(self, email, username, location, first_name, savingtarget, last_name, age, password=None):
         if not email:
             raise ValueError('Users must have an email address')
         if not username:
@@ -24,6 +24,9 @@ class MyUserManager(BaseUserManager):
 
         if not first_name:
             raise ValueError('Users must have a first_name')
+
+        if not savingtarget:
+            raise ValueError('Users must have a savingtarget')
 
         if not last_name:
             raise ValueError('Users must have a last_name')
@@ -36,6 +39,7 @@ class MyUserManager(BaseUserManager):
             username=username,
             location=location,
             first_name=first_name,
+            savingtarget=savingtarget,
             last_name=last_name,
             age=age,
         )
@@ -44,13 +48,14 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username, location, first_name, last_name, age, password):
+    def create_superuser(self, email, username, location, first_name, savingtarget, last_name, age, password):
         user = self.create_user(
             email=self.normalize_email(email),
             password=password,
             username=username,
             location=location,
             first_name=first_name,
+            savingtarget=savingtarget,
             last_name=last_name,
             age=age,
 
@@ -74,9 +79,11 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=30, unique=True)
     location = models.CharField(max_length=60, unique=False)
     first_name = models.CharField(max_length=60, unique=False)
+    savingtarget = models.IntegerField(default=1000)
     last_name = models.CharField(max_length=60, unique=False)
     age = models.IntegerField(max_length=2, unique=False)
     dummySubResponse = models.CharField(max_length=100)
+    dummyAccountField = models.CharField(max_length=100)
     date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
@@ -86,7 +93,7 @@ class User(AbstractBaseUser):
 
     # USERNAME_FIELD = 'email'
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'location', 'first_name', 'last_name', 'age']
+    REQUIRED_FIELDS = ['email', 'location', 'first_name', 'savingtarget', 'last_name', 'age']
     # REQUIRED_FIELDS = ['username']
 
     objects = MyUserManager()

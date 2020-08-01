@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', 'karma', 'username', 'subs', 'location', 'first_name', 'last_name', 'age', 'moderated_subs', 'dummySubResponse',)
+        fields = ('pk', 'karma', 'username', 'subs', 'location', 'first_name', 'savingtarget', 'last_name', 'age', 'moderated_subs', 'dummySubResponse',)
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -59,6 +59,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
         required=True,
         help_text=_(
             'Required first_name, 4-128 characters, only letters'
+        ),
+    )
+    savingtarget = serializers.SlugField(
+        max_length=10,
+        min_length=1,
+        required=True,
+        help_text=_(
+            'Required savingtarget, 4-10 characters, only numbers'
         ),
     )
 
@@ -102,7 +110,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'location', 'first_name', 'last_name', 'age', 'password', 'subs']
+        fields = ['username', 'email', 'location', 'first_name', 'savingtarget', 'last_name', 'age', 'password', 'subs']
 
     def create(self, validated_data):
         user = User(
@@ -110,6 +118,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             location=validated_data['location'],
             first_name=validated_data['first_name'],
+            savingtarget=validated_data['savingtarget'],
             last_name=validated_data['last_name'],
             age=validated_data['age']
         )
@@ -163,7 +172,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'location', 'first_name', 'last_name', 'age', 'current_password', 'new_password']
+        fields = ['username', 'email', 'location', 'first_name', 'savingtarget', 'last_name', 'age', 'current_password', 'new_password']
         lookup_field = 'username'
 
     def update(self, instance, validated_data):
@@ -245,6 +254,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'email',
             'subs',
             'first_name',
+            'savingtarget',
             'last_name',
             'age',
             'moderated_subs',
@@ -288,6 +298,76 @@ class UserProfileSerializer(serializers.ModelSerializer):
     #     )
     #     return serializer.data
 
+class AccountPropertiesUpdateSerializer(serializers.ModelSerializer):
+    subs = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='title'
+
+    )
+    # moderated_subs = serializers.PrimaryKeyRelatedField(
+    #     many=True,
+    #     read_only=True,
+    # )
+
+    moderated_subs = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='title'
+
+    )
+    # cake_day = serializers.DateTimeField(
+    #     source='date_joined'
+    # )
+    # comments = serializers.SerializerMethodField()
+    loanrequests = serializers.SerializerMethodField()
+    savingrequests = serializers.SerializerMethodField()
+    dummyAccountField = "ddddddddd"
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'location',
+            'first_name',
+            'savingtarget',
+            'last_name',
+            'age',
+            'username',
+            'email',
+            'subs',
+            'moderated_subs',
+            'loanrequests',
+            'savingrequests',
+        )
+
+    # def get_comments(self, obj):
+    #     serializer = CommentSerializer(
+    #         obj.comments.all().order_by("-created"),
+    #         many=True,
+    #         context=self.context
+    #     )
+    #     return serializer.data
+
+    def get_loanrequests(self, obj):
+        serializer = LoanrequestSerializer(
+            obj.loanrequests.all().order_by("-created"),
+            many=True,
+            context=self.context
+        )
+        return serializer.data
+
+    def get_savingrequests(self, obj):
+        serializer = SavingrequestSerializer(
+            obj.savingrequests.all().order_by("-created"),
+            many=True,
+            context=self.context
+        )
+        return serializer.data
+
+    # class Meta:
+    #     model = User
+    #     fields = ['pk', 'email', 'username', ]
+
 
 class AccountPropertiesSerializer(serializers.ModelSerializer):
     subs = serializers.SlugRelatedField(
@@ -313,19 +393,21 @@ class AccountPropertiesSerializer(serializers.ModelSerializer):
     # comments = serializers.SerializerMethodField()
     loanrequests = serializers.SerializerMethodField()
     savingrequests = serializers.SerializerMethodField()
-
+    dummyAccountField = "ddddddddd"
     class Meta:
         model = User
         fields = (
             'pk',
             'location',
             'first_name',
+            'savingtarget',
             'last_name',
             'age',
             'username',
             'email',
             'subs',
             'moderated_subs',
+            'dummyAccountField',
             'loanrequests',
             'savingrequests',
             'karma',

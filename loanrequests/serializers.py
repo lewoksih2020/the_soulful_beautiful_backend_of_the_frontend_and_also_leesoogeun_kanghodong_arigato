@@ -36,7 +36,7 @@ class LoanrequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Loanrequest
-        fields = ('pk', 'created', 'updated', 'title', 'body',
+        fields = ('pk', 'created', 'updated', 'title', 'loanamount', 'body',
                     'subreddit', 'authorsender', 'subreddit_title',
                   'authorsender_username')
 

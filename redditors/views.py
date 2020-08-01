@@ -1,31 +1,28 @@
-from django.shortcuts import render
-from rest_framework import generics, permissions, renderers, status
+from rest_framework import generics, serializers
+from rest_framework import status, exceptions
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.permissions import (
-    AllowAny,
     IsAuthenticatedOrReadOnly,
     IsAuthenticated)
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from log import setup_logger
 from loanrequests.pagination import LoanrequestListPagination
+from log import setup_logger
+from redditors.permissions import IsLoggedInOrReadOnly
 from subs.models import Sub
+from subs.serializers import SubSerializer
 from .models import User
 from .serializers import (
     UserSerializer,
     UserCreateSerializer,
     UserUpdateSerializer,
     UserProfileSerializer,
-    AccountPropertiesSerializer)
-from subs.serializers import SubSerializer
-from redditors.permissions import IsLoggedInOrReadOnly
-from rest_framework import status, exceptions
+    AccountPropertiesSerializer, AccountPropertiesUpdateSerializer)
 
 logger = setup_logger()
 
@@ -71,6 +68,24 @@ def account_properties_view(request):
         logger.info("Inside Get")
         serializer = AccountPropertiesSerializer(user)
         return Response(serializer.data)
+
+
+@api_view(['PUT', ])
+@permission_classes((IsAuthenticated,))
+def update_account_view(request):
+    try:
+        user = request.user
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        serializer = AccountPropertiesUpdateSerializer(user, data=request.data)
+        data = {}
+        if serializer.is_valid():
+            serializer.save()
+            data['response'] = 'Account update success'
+            return Response(data=data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserPropertiesDetailView(generics.RetrieveAPIView):
@@ -149,6 +164,7 @@ class UserCreateView(generics.CreateAPIView):
             data['username'] = user.username
             data['location'] = user.location
             data['first_name'] = user.first_name
+            data['savingtarget'] = user.savingtarget
             data['last_name'] = user.last_name
             data['age'] = user.age
             data['pk'] = user.pk
@@ -197,6 +213,14 @@ class UserLoginView(ObtainAuthToken):
             data=request.data,
             context={'request': request}
         )
+
+        loanrequests = serializers.SerializerMethodField()
+        savingrequests = serializers.SerializerMethodField()
+
+
+
+
+
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, _ = Token.objects.get_or_create(user=user)
@@ -215,6 +239,7 @@ class UserLoginView(ObtainAuthToken):
             'email': user.email,
             'location': user.location,
             'first_name': user.first_name,
+            'savingtarget': user.savingtarget,
             'last_name': user.last_name,
             'age': user.age,
             'pk': user.pk,

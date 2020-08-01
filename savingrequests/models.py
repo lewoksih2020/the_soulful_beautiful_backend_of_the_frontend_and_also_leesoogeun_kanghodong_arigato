@@ -31,6 +31,8 @@ class Savingrequest(models.Model):
             message=_("The title can only be 150 characters in length.")
         )]
     )
+    savingamount = models.IntegerField(blank=False)
+
     body = BleachField(blank=True)
 
     subreddit = models.ForeignKey(

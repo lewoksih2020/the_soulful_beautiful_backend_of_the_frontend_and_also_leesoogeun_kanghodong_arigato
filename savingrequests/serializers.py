@@ -36,7 +36,7 @@ class SavingrequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Savingrequest
-        fields = ('pk', 'created', 'updated', 'title', 'body',
+        fields = ('pk', 'created', 'updated', 'title', 'savingamount', 'body',
                     'subreddit', 'authorsender', 'subreddit_title',
                   'authorsender_username')
 

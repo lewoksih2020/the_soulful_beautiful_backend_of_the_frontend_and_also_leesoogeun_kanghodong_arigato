@@ -31,6 +31,16 @@ class Loanrequest(models.Model):
             message=_("The title can only be 150 characters in length.")
         )]
     )
+    loanamount = models.IntegerField(blank=False)
+
+    # loanamount = BleachField(default=240,
+    #                          blank=False,
+    #     validators=[MaxLengthValidator(
+    #         10,
+    #         message=_("The number can only be 10 characters in length or less.")
+    #     )]
+    # )
+
     body = BleachField(blank=True)
 
     subreddit = models.ForeignKey(
