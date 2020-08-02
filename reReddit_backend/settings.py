@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'loanrequests',
     'savingrequests',
     'core',
+    'import_export',
 ]
 
 MIDDLEWARE = [
