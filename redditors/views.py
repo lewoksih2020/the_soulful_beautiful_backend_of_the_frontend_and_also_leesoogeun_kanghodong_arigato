@@ -165,6 +165,8 @@ class UserCreateView(generics.CreateAPIView):
             data['location'] = user.location
             data['first_name'] = user.first_name
             data['savingtarget'] = user.savingtarget
+            data['is_verified_aadharcard'] = user.is_verified_aadharcard
+            data['aadharcard'] = user.aadharcard
             data['last_name'] = user.last_name
             data['age'] = user.age
             data['pk'] = user.pk
@@ -240,6 +242,8 @@ class UserLoginView(ObtainAuthToken):
             'location': user.location,
             'first_name': user.first_name,
             'savingtarget': user.savingtarget,
+            'aadharcard': user.aadharcard,
+            'is_verified_aadharcard': user.is_verified_aadharcard,
             'last_name': user.last_name,
             'age': user.age,
             'pk': user.pk,

@@ -8,7 +8,7 @@ from redditors.models import User
 
 class AccountAdmin(UserAdmin):
     list_display = (
-    'pk', 'email', 'username', 'date_joined', 'last_login', 'is_admin', 'is_staff', 'is_superuser', 'karma')
+    'pk', 'email', 'username', 'date_joined', 'last_login', 'is_verified_aadharcard', 'is_admin', 'is_staff', 'is_superuser', 'karma')
     search_fields = ('pk', 'email', 'username',)
     readonly_fields = ('pk', 'date_joined', 'last_login')
 

@@ -14,7 +14,8 @@ from rest_framework.authtoken.models import Token
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, username, location, first_name, savingtarget, last_name, age, password=None):
+    def create_user(self, email, username, location, first_name, savingtarget, aadharcard, last_name, age,
+                    password=None):
         if not email:
             raise ValueError('Users must have an email address')
         if not username:
@@ -34,12 +35,16 @@ class MyUserManager(BaseUserManager):
         if not age:
             raise ValueError('Users must have a age')
 
+        if not aadharcard:
+            raise ValueError('Users must have a aadharcard')
+
         user = self.model(
             email=self.normalize_email(email),
             username=username,
             location=location,
             first_name=first_name,
             savingtarget=savingtarget,
+            aadharcard=aadharcard,
             last_name=last_name,
             age=age,
         )
@@ -48,7 +53,7 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username, location, first_name, savingtarget, last_name, age, password):
+    def create_superuser(self, email, username, location, first_name, savingtarget, aadharcard, last_name, age, password):
         user = self.create_user(
             email=self.normalize_email(email),
             password=password,
@@ -56,11 +61,13 @@ class MyUserManager(BaseUserManager):
             location=location,
             first_name=first_name,
             savingtarget=savingtarget,
+            aadharcard=aadharcard,
             last_name=last_name,
             age=age,
 
         )
         user.is_admin = True
+        user.is_verified_aadharcard = True
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
@@ -80,12 +87,14 @@ class User(AbstractBaseUser):
     location = models.CharField(max_length=60, unique=False)
     first_name = models.CharField(max_length=60, unique=False)
     savingtarget = models.IntegerField(default=1000)
+    aadharcard = models.CharField(max_length=60, unique=True)
     last_name = models.CharField(max_length=60, unique=False)
     age = models.IntegerField(max_length=2, unique=False)
     dummySubResponse = models.CharField(max_length=100)
     dummyAccountField = models.CharField(max_length=100)
     date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
+    is_verified_aadharcard = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -93,7 +102,7 @@ class User(AbstractBaseUser):
 
     # USERNAME_FIELD = 'email'
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'location', 'first_name', 'savingtarget', 'last_name', 'age']
+    REQUIRED_FIELDS = ['email', 'location', 'first_name', 'savingtarget', 'aadharcard', 'last_name', 'age']
     # REQUIRED_FIELDS = ['username']
 
     objects = MyUserManager()

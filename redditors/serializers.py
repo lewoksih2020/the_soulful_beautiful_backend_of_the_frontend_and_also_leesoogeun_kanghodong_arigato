@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', 'karma', 'username', 'subs', 'location', 'first_name', 'savingtarget', 'last_name', 'age', 'moderated_subs', 'dummySubResponse',)
+        fields = ('pk', 'karma', 'username', 'subs', 'location', 'first_name', 'savingtarget', 'is_verified_aadharcard', 'aadharcard', 'last_name', 'age', 'moderated_subs', 'dummySubResponse',)
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -70,6 +70,15 @@ class UserCreateSerializer(serializers.ModelSerializer):
         ),
     )
 
+    aadharcard = serializers.SlugField(
+        max_length=60,
+        min_length=1,
+        required=True,
+        help_text=_(
+            'Required aadharcard, 4-60 characters, only numbers'
+        ),
+    )
+
     last_name = serializers.SlugField(
         max_length=128,
         min_length=1,
@@ -110,7 +119,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'location', 'first_name', 'savingtarget', 'last_name', 'age', 'password', 'subs']
+        fields = ['username', 'email', 'location', 'first_name', 'savingtarget', 'is_verified_aadharcard', 'aadharcard', 'last_name', 'age', 'password', 'subs']
 
     def create(self, validated_data):
         user = User(
@@ -119,6 +128,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             location=validated_data['location'],
             first_name=validated_data['first_name'],
             savingtarget=validated_data['savingtarget'],
+            aadharcard=validated_data['aadharcard'],
             last_name=validated_data['last_name'],
             age=validated_data['age']
         )
@@ -172,7 +182,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'location', 'first_name', 'savingtarget', 'last_name', 'age', 'current_password', 'new_password']
+        fields = ['username', 'email', 'location', 'first_name', 'savingtarget', 'is_verified_aadharcard', 'aadharcard', 'last_name', 'age', 'current_password', 'new_password']
         lookup_field = 'username'
 
     def update(self, instance, validated_data):
@@ -255,6 +265,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'subs',
             'first_name',
             'savingtarget',
+            'is_verified_aadharcard',
+            'aadharcard',
             'last_name',
             'age',
             'moderated_subs',
@@ -330,6 +342,8 @@ class AccountPropertiesUpdateSerializer(serializers.ModelSerializer):
             'location',
             'first_name',
             'savingtarget',
+            'is_verified_aadharcard',
+            'aadharcard',
             'last_name',
             'age',
             'username',
@@ -401,6 +415,8 @@ class AccountPropertiesSerializer(serializers.ModelSerializer):
             'location',
             'first_name',
             'savingtarget',
+            'is_verified_aadharcard',
+            'aadharcard',
             'last_name',
             'age',
             'username',
